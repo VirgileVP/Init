@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+del_us()
+{
+	all_users=$(who | cut -d ' ' -f1 | grep $1)
+	if [ "$1" = "$all_users" ]
+	then
+		pkill -u $1
+		userdel -fr $1
+		if [ $? -eq 0 ]
+		then
+			echo "user $1 unlog and deleted"
+		else
+			echo "user $1 still exist"
+		fi
+		exit
+	fi
+	echo "user $1 isn'tconnected or didn't exist"
+	return 64
+}
+
+if [ "$#" -ne 1 ]
+	then
+		echo "Usage: ./02 username"
+		exit
+	else
+	if [ $(id -u) != 0 ]
+	then
+		echo "Become root to do that !"
+		exit
+	else
+		del_us $1
+		exit
+	fi
+fi

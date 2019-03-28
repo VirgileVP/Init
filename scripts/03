@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+RED='\033[31m'
+GREEN='\033[32m'
+YELLOW='\033[33m'
+BASE='\033[0m'
+
+fill_makefile()
+
+touch_files_and_folders()
+{
+	touch Makefile
+	echo -e "${YELLOW} === Makefile created ==="
+	touch auteur
+	echo $2 > auteur
+	echo -e "${YELLOW} === auteur created ===${BASE}"
+	git clone https://github.com/VirgileVP/libft libft
+	cd libft
+	rm -rf .git
+	cd ..
+	echo -e "${YELLOW} === libft cloned ==="
+	mkdir srcs
+	mkdir includes
+	cd includes
+	touch "$1.h"
+	cd ..
+	echo -e "${YELLOW} === srcs/, includes, $1.h created ==="
+}
+
+if [ "$#" -ne 2 ]
+	then
+		echo -e "${RED} Usage : ./03 Project_Name Login"
+		exit
+	else
+		mkdir $1
+		cd $1
+		touch_files_and_folders $1 $2
+		cd ..
+		echo -e "${GREEN} === Project created ==="
+		exit
+fi
