@@ -7,16 +7,26 @@ BASE='\033[0m'
 
 fill_makefile()
 {
-	echo "NAME = \n\n" > Makefile
-	echo "CC = GCC\n" >> Makefile	
-	echo "CFLAGS = -Wall -Werror -Wextra\n" >> Makefile
-	echo "INCLUDES = $(addprefix -I, includes)\n" >> Makefile
-	echo "CC = GCC\n" >> Makefile
+	echo -e 'NAME = \n\n' > Makefile
+	echo -e 'CC = GCC' >> Makefile	
+	echo -e 'CFLAGS = -Wall -Werror -Wextra' >> Makefile
+	echo -e 'INCLUDES = $(addprefix -I, includes)' >> Makefile
+	echo -e 'CC = GCC\n' >> Makefile
+	echo -e 'LIB = libft/libft.a\n' >> Makefile
+	echo -e 'SRC = \n' >> Makefile
+	echo -e 'SRCS = $(addprefix srcs/, $(SRC))\n' >> Makefile
+	echo -e 'OBJ = $(SRCS:.c=.o)\n\n' >> Makefile
+	echo -e 'all:$(NAME)\n\n\n' >> Makefile
+	echo -e '$(LIB):\n		make -C libft\n' >> Makefile
+	echo -e 'clean:\n		make clean -C libft\n' >> Makefile
+	echo -e 'fclean:clean\n		make fclean -C libft\n		rm -rf $(OBJ)\n' >> Makefile
+	echo -e 're:fclean\n		make all\n' >> Makefile
 }
 
 touch_files_and_folders()
 {
 	touch Makefile
+	fill_makefile
 	echo -e "${YELLOW} === Makefile created ===${BASE}"
 	touch auteur
 	echo $LOGIN > auteur
@@ -60,7 +70,7 @@ create_project()
 			clone_libft
 
 	fi
-		if [ -n $ADD_DIR ]
+	if [ -n "$ADD_DIR" ]
 		then
 			mkdir $ADD_DIR
 			echo -e "${YELLOW} === $ADD_DIR created ===${BASE}"
