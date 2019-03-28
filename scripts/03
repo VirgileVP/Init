@@ -3,37 +3,106 @@
 RED='\033[31m'
 GREEN='\033[32m'
 YELLOW='\033[33m'
-BASE='\033[30m'
+BASE='\033[0m'
+
+fill_makefile()
+{
+	echo "NAME = \n\n" > Makefile
+	echo "CC = GCC\n" >> Makefile	
+	echo "CFLAGS = -Wall -Werror -Wextra\n" >> Makefile
+	echo "INCLUDES = $(addprefix -I, includes)\n" >> Makefile
+	echo "CC = GCC\n" >> Makefile
+}
 
 touch_files_and_folders()
 {
 	touch Makefile
 	echo -e "${YELLOW} === Makefile created ===${BASE}"
 	touch auteur
-	echo $2 > auteur
+	echo $LOGIN > auteur
 	echo -e "${YELLOW} === auteur created ===${BASE}"
-	git clone https://github.com/VirgileVP/libft libft
-	cd libft
-	rm -rf .git
-	cd ..
-	echo -e "${YELLOW} === libft cloned ===${BASE}"
 	mkdir srcs
 	mkdir includes
 	cd includes
 	touch "$1.h"
 	cd ..
-	echo -e "${YELLOW} === srcs/, includes, $1.h created ===${BASE}"
+	echo -e "${YELLOW} === srcs/, includes/ and $NAME.h created ===${BASE}"
 }
 
-if [ "$#" -ne 2 ]
+clone_libft()
+{
+	git clone https://github.com/VirgileVP/libft libft
+	cd libft
+	rm -rf .git
+	cd ..
+	echo -e "${YELLOW} === libft cloned ===${BASE}"
+}
+
+commands()
+{
+	echo " Usage : ./03 [-h -p -l -L -d]"
+	echo "    -h : help"
+	echo "    -p [Project name] : specify project name"
+	echo "    -l [login] : specify your login"
+	echo "    -d [directory name] : add additional directory"
+	echo "    -L : CLone libft"
+	exit 1
+}
+
+create_project()
+{
+	mkdir "$NAME"
+	cd "$NAME"
+	touch_files_and_folders $NAME $LOGIN
+
+	if [ -e "$LIBFT" ]
+		then
+			clone_libft
+
+	fi
+		if [ -n $ADD_DIR ]
+		then
+			mkdir $ADD_DIR
+			echo -e "${YELLOW} === $ADD_DIR created ===${BASE}"
+	fi
+	
+	cd ..
+	echo -e "${GREEN} === PROJECT CREATED ===${BASE}"
+}
+
+if [ "$#" -eq 0 ]
 	then
-		echo -e "${RED} Usage : ./03 Project_Name Login${BASE}"
-		exit
+		commands
 	else
-		mkdir $1
-		cd $1
-		touch_files_and_folders $1 $2
-		cd ..
-		echo -e "${GREEN} === Project created ===${BASE}"
+		while getopts ":p:l:d:hL" OPTION
+		do
+			case $OPTION in
+				h)
+					commands
+					exit 1
+					;;
+				p)
+					NAME="$OPTARG"
+					;;
+				l)
+					LOGIN="$OPTARG"
+					;;
+				L)
+					LIBFT=1
+					;;
+				d)
+					ADD_DIR="$OPTARG"
+					;;
+				:)
+					echo -e "${RED} $OPTARG : Missing argument ! Check ./03 -h${BASE}"
+					exit 1
+					;;
+				\?)
+					echo -e "${RED} $OPTARG : Invalid option !${BASE}"
+					exit 1
+					;;
+			esac
+		done 2>/dev/null
+		create_project $NAME $LOGIN $LIBFT $ADDDIR
 		exit
 fi
