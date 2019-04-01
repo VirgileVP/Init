@@ -70,12 +70,13 @@ clone_libft()
 
 commands()
 {
-	echo " Usage : ./03 [-h -p -l -L -d]"
+	echo " Usage : ./03 [-h -p -l -L -d -r]"
 	echo "    -h : help"
 	echo "    -p [Project name] : specify project name"
 	echo "    -l [login] : specify your login"
 	echo "    -d [directory name] : add additional directory"
-	echo "    -L : CLone libft"
+	echo "    -L : cLone libft"
+	echo "    -r : create a parent directory"
 	exit 1
 }
 
