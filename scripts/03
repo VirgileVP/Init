@@ -48,7 +48,7 @@ touch_files_and_folders()
 	echo -n "# define " >> "$NAME.h"
 	echo -n "$NAME" | tr '[:lower:]' '[:upper:]' >> "$NAME.h"
 	echo "_H" >> "$NAME.h"
-	if [ $LIBFT -eq 1 ]
+	if [ $LIBFT ]
 		then
 			echo "# include \"../libft/libft.h\"" >> "$NAME.h"
 	fi
@@ -81,11 +81,14 @@ commands()
 
 create_project()
 {
-	mkdir "$NAME"
-	cd "$NAME"
+	if [ $R ]
+		then
+			mkdir "$NAME"
+			cd "$NAME"
+	fi
 	touch_files_and_folders $NAME $LOGIN $LIBFT
 
-	if [ $LIBFT -eq 1 ]
+	if [ $LIBFT ]
 		then
 			clone_libft
 
@@ -96,7 +99,10 @@ create_project()
 			echo -e "${YELLOW} === $ADD_DIR created ===${BASE}"
 	fi
 	
-	cd ..
+	if [ $R ]
+		then
+			cd ..
+	fi
 	echo -e "${GREEN} === PROJECT CREATED ===${BASE}"
 }
 
@@ -104,7 +110,7 @@ if [ "$#" -eq 0 ]
 	then
 		commands
 	else
-		while getopts ":p:l:d:hL" OPTION
+		while getopts ":p:l:d:hLr" OPTION
 		do
 			case $OPTION in
 				h)
@@ -123,6 +129,9 @@ if [ "$#" -eq 0 ]
 				d)
 					ADD_DIR="$OPTARG"
 					;;
+				r)
+					R=1
+					;;
 				:)
 					echo -e "${RED} $OPTARG : Missing argument ! Check ./03 -h${BASE}"
 					exit 1
@@ -133,6 +142,6 @@ if [ "$#" -eq 0 ]
 					;;
 			esac
 		done 2>/dev/null
-		create_project $NAME $LOGIN $LIBFT $ADDDIR
+		create_project $NAME $LOGIN $LIBFT $ADDDIR $R
 		exit
 fi
